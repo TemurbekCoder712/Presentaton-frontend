@@ -330,17 +330,42 @@ export default function App() {
 
           {/* PROFILE */}
           {screen === 'profile' && (
-            <div style={{ width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, paddingBottom: 20 }}>
-              <div style={{ background: '#fff', borderRadius: 12, padding: '24px', width: '100%', boxShadow: '0 4px 14px rgba(108,99,255,.05)', border: '1px solid #e0dff8', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 32, marginBottom: 16, boxShadow: '0 4px 14px rgba(108,99,255,.3)' }}>
+            <div style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 20 }}>
+              {/* Avatar */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+                <div style={{ width: 90, height: 90, borderRadius: '50%', background: '#f8f9fc', border: '2px solid #e0dff8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6c63ff', fontWeight: 500, fontSize: 36, boxShadow: '0 4px 15px rgba(108,99,255,.08)' }}>
                   {userInitial}
                 </div>
-                <h2 style={{ margin: '0 0 4px', fontSize: 20, color: '#1a1a2e', fontWeight: 600 }}>{userName}</h2>
-                <div style={{ color: '#9a9db8', fontSize: 14, marginBottom: 16 }}>{userUsername}</div>
-                <button onClick={() => setActiveTab('home')} style={{ padding: '8px 16px', background: '#f4f3ff', color: '#6c63ff', border: '1px solid #e0dff8', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                  ← Asosiy sahifaga qaytish
-                </button>
               </div>
+
+              {/* Form Fields */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
+                {/* Full Name */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>To'liq ism</label>
+                  <input type="text" value={userName} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                </div>
+                {/* Username */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Foydalanuvchi nomi</label>
+                  <input type="text" value={userUsername || 'Kiritilmagan'} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                </div>
+                {/* Email */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Email</label>
+                  <input type="email" value={user ? `tg_${user.id}@telegram.local` : 'Kiritilmagan'} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                </div>
+                {/* Registration Date */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Ro'yxatdan o'tgan sana</label>
+                  <input type="text" value="Bugun" readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <button onClick={() => setActiveTab('home')} style={{ marginTop: 10, padding: '14px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(108,99,255,.25)', transition: 'all 0.2s' }}>
+                O'zgarishlarni saqlash
+              </button>
 
               <div style={{ width: '100%' }}>
                 <h3 style={{ fontSize: 15, color: '#1a1a2e', fontWeight: 600, margin: '0 0 12px' }}>Mening taqdimotlarim</h3>
