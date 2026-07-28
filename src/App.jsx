@@ -31,7 +31,6 @@ export default function App() {
   const [error, setError] = useState('');
   const [slides, setSlides] = useState(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [activeSlide, setActiveSlide] = useState(0);
   const inputRef = useRef(null);
   const progressRef = useRef(null);
 
