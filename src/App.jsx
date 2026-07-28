@@ -128,9 +128,11 @@ export default function App() {
     }
   };
 
-  const userName = user ? `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() : 'Foydalanuvchi';
-  const userUsername = user?.username ? `@${user.username}` : '';
+  const userName = user ? `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() : 'No name';
+  const userUsername = user?.username ? `@${user.username}` : 'No username';
   const userInitial = userName.charAt(0).toUpperCase();
+  const userEmail = user ? `tg_${user.id}@telegram.local` : 'No email';
+  const userRegDate = 'XX.XX.XXXX';
 
   const screen = activeTab === 'profile' ? 'profile' : loading ? 'loading' : slides ? 'slides' : error ? 'error' : 'home';
 
@@ -348,17 +350,17 @@ export default function App() {
                 {/* Username */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Foydalanuvchi nomi</label>
-                  <input type="text" value={userUsername || 'Kiritilmagan'} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                  <input type="text" value={userUsername} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
                 </div>
                 {/* Email */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Email</label>
-                  <input type="email" value={user ? `tg_${user.id}@telegram.local` : 'Kiritilmagan'} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                  <input type="email" value={userEmail} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
                 </div>
                 {/* Registration Date */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label style={{ fontSize: 13, color: '#4b4b70', fontWeight: 500 }}>Ro'yxatdan o'tgan sana</label>
-                  <input type="text" value="Bugun" readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
+                  <input type="text" value={userRegDate} readOnly style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', color: '#1a1a2e', fontSize: 14, outline: 'none' }} />
                 </div>
               </div>
 
