@@ -209,7 +209,7 @@ export default function App() {
           {screen === 'home' && (
             <div style={{ textAlign: 'center', width: '100%', maxWidth: 340 }}>
               <div style={{ width: 76, height: 76, borderRadius: 22, background: 'linear-gradient(135deg,#ede9fe,#ddd6fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', fontSize: 36 }}>
-                <img style={{ width: '100%', height: '100%', borderRadius: "6px" }} src={image} alt="logo" />
+                <img style={{ width: '100%', height: '100%', borderRadius: "10px" }} src={image} alt="logo" />
               </div>
               <h2 style={{ fontWeight: 800, fontSize: 22, color: '#1a1a2e', margin: '0 0 10px' }}>Qanday dars o'tmoqchisiz?</h2>
               <p style={{ color: '#7b7fa8', fontSize: 14, margin: '0 0 24px', lineHeight: 1.65 }}>Mavzuni erkin tilda yozing. AI o'zi mos fan, sinf va slaydlarni tuzib beradi.</p>
