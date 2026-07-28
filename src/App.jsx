@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import image from '../src/assets/image.png'
+import image from './assets/image.png'
 
 const tg = window.Telegram?.WebApp;
 const user = tg?.initDataUnsafe?.user;
