@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import image from '../src/assets/image.png'
 
 const tg = window.Telegram?.WebApp;
 const user = tg?.initDataUnsafe?.user;
@@ -143,7 +144,9 @@ export default function App() {
       <div style={{ position: 'fixed', top: 0, left: sidebarOpen ? 0 : '-290px', width: 285, height: '100vh', background: '#fff', zIndex: 50, display: 'flex', flexDirection: 'column', transition: 'left .28s cubic-bezier(.4,0,.2,1)', boxShadow: sidebarOpen ? '6px 0 30px rgba(0,0,0,.13)' : 'none' }}>
         {/* Logo */}
         <div style={{ padding: '18px 18px 14px', borderBottom: '1px solid #f0f0f8', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📊</div>
+          <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
+            <img src={image} alt="logo" />
+          </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>Presentation AI</div>
             <div style={{ fontSize: 11, color: '#9a9db8' }}>O'qituvchi assistenti</div>
