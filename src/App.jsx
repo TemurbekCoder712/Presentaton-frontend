@@ -336,13 +336,14 @@ export default function App() {
       {/* AI Support Chat Button */}
       <button 
           onClick={() => setChatOpen(p => !p)}
-          style={{ position: 'fixed', bottom: 20, right: 20, width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontSize: 24, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(108,99,255,.4)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}>
+          className="chat-pulse"
+          style={{ position: 'fixed', bottom: 80, right: 20, width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontSize: 24, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(108,99,255,.4)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}>
           {chatOpen ? '✕' : '💬'}
       </button>
 
       {/* AI Support Chat Modal */}
       {chatOpen && (
-          <div style={{ position: 'fixed', bottom: 85, right: 20, width: 'calc(100% - 40px)', maxWidth: 320, height: 420, background: '#fff', borderRadius: 20, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
+          <div style={{ position: 'fixed', bottom: 145, right: 20, width: 'calc(100% - 40px)', maxWidth: 320, height: 420, background: '#fff', borderRadius: 20, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
               {/* Header */}
               <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 20 }}>🤖</span> Support Bot
@@ -369,6 +370,14 @@ export default function App() {
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{margin:0;padding:0;overflow:hidden;}
         @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes pulse-anim {
+          0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.5); }
+          70% { box-shadow: 0 0 0 15px rgba(108, 99, 255, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
+        }
+        .chat-pulse {
+          animation: pulse-anim 2s infinite;
+        }
         ::-webkit-scrollbar{width:4px;}
         ::-webkit-scrollbar-thumb{background:#d1d5ee;border-radius:2px;}
       `}</style>
