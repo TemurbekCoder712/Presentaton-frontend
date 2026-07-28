@@ -31,6 +31,8 @@ export default function App() {
   const [error, setError] = useState('');
   const [slides, setSlides] = useState(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [history, setHistory] = useState([]); // History state for tracking presentations
+  const [activeTab, setActiveTab] = useState('home'); // Tabs: home, profile
   const inputRef = useRef(null);
   const progressRef = useRef(null);
 
@@ -88,6 +90,7 @@ export default function App() {
 
       stopProgress(true);
       setSlides(result.slides || []);
+      setHistory(prev => [{ topic: finalTopic, date: new Date().toLocaleDateString() }, ...prev]);
       setTopic('');
     } catch (err) {
       stopProgress(false);
@@ -128,10 +131,10 @@ export default function App() {
   const userUsername = user?.username ? `@${user.username}` : '';
   const userInitial = userName.charAt(0).toUpperCase();
 
-  const screen = loading ? 'loading' : slides ? 'slides' : error ? 'error' : 'home';
+  const screen = activeTab === 'profile' ? 'profile' : loading ? 'loading' : slides ? 'slides' : error ? 'error' : 'home';
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', backgroundColor: '#f7f8fc', fontFamily: "'Inter','Segoe UI',system-ui,sans-serif", position: 'relative' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', backgroundColor: '#f7f8fc', fontFamily: "'Rubik', sans-serif", position: 'relative' }}>
 
       {/* Overlay */}
       {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.35)', zIndex: 40, backdropFilter: 'blur(3px)' }} />}
@@ -150,12 +153,9 @@ export default function App() {
 
         {/* Buttons */}
         <div style={{ padding: '14px 14px 6px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button onClick={() => { setSidebarOpen(false); setSlides(null); setError(''); setTimeout(() => inputRef.current?.focus(), 300); }}
+          <button onClick={() => { setActiveTab('home'); setSidebarOpen(false); setSlides(null); setError(''); setTimeout(() => inputRef.current?.focus(), 300); }}
             style={{ padding: '11px 14px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 14px rgba(108,99,255,.3)' }}>
             <span style={{ fontSize: 18 }}>＋</span> Yangi taqdimot
-          </button>
-          <button style={{ padding: '11px 14px', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, opacity: .85 }}>
-            <span>✨</span> Coming Soon
           </button>
         </div>
 
@@ -170,10 +170,13 @@ export default function App() {
         </div>
 
         {/* User */}
-        <div style={{ padding: '14px 16px', borderTop: '1px solid #f0f0f8', display: 'flex', alignItems: 'center', gap: 11, background: '#fafafe' }}>
+        <div onClick={() => { setActiveTab('profile'); setSidebarOpen(false); }} 
+             style={{ padding: '14px 16px', borderTop: '1px solid #f0f0f8', display: 'flex', alignItems: 'center', gap: 11, background: '#fafafe', cursor: 'pointer' }}>
           <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 16, flexShrink: 0 }}>{userInitial}</div>
           <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userName}</div>
+            <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {userName.length > 20 ? userName.slice(0, 20) + '...' : userName}
+            </div>
             {userUsername && <div style={{ fontSize: 12, color: '#9a9db8' }}>{userUsername}</div>}
           </div>
         </div>
@@ -186,7 +189,7 @@ export default function App() {
         <div style={{ padding: '13px 18px', display: 'flex', alignItems: 'center', gap: 12, background: '#fff', borderBottom: '1px solid #f0f0f8', boxShadow: '0 1px 4px rgba(0,0,0,.05)', zIndex: 10 }}>
           <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4b4b70', fontSize: 20, display: 'flex', alignItems: 'center', padding: '3px 6px', borderRadius: 8 }}>☰</button>
           <span style={{ fontWeight: 600, fontSize: 15, color: '#1a1a2e', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {screen === 'slides' ? sentTopic : 'Yangi taqdimot'}
+            {screen === 'profile' ? 'Profil sozlamalari' : screen === 'slides' ? sentTopic : 'Yangi taqdimot'}
           </span>
           {/* AI Support Chat Button in Navbar */}
           <button 
@@ -230,8 +233,8 @@ export default function App() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                   <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid #6c63ff', borderTopColor: 'transparent', animation: 'spin .8s linear infinite', flexShrink: 0 }} />
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a2e' }}>Generating lesson...</div>
-                    <div style={{ fontSize: 12, color: '#9a9db8', marginTop: 2 }}>AI is preparing your lesson.</div>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a2e' }}>Taqdimot tayyorlanmoqda...</div>
+                    <div style={{ fontSize: 12, color: '#9a9db8', marginTop: 2 }}>Sun'iy intellekt darsingizni tayyorlamoqda.</div>
                   </div>
                 </div>
                 {/* Progress bar */}
@@ -319,6 +322,43 @@ export default function App() {
               <button onClick={() => setError('')} style={{ padding: '11px 28px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Qayta urinish</button>
             </div>
           )}
+
+          {/* PROFILE */}
+          {screen === 'profile' && (
+            <div style={{ width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, paddingBottom: 20 }}>
+              <div style={{ background: '#fff', borderRadius: 12, padding: '24px', width: '100%', boxShadow: '0 4px 14px rgba(108,99,255,.05)', border: '1px solid #e0dff8', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 32, marginBottom: 16, boxShadow: '0 4px 14px rgba(108,99,255,.3)' }}>
+                  {userInitial}
+                </div>
+                <h2 style={{ margin: '0 0 4px', fontSize: 20, color: '#1a1a2e', fontWeight: 600 }}>{userName}</h2>
+                <div style={{ color: '#9a9db8', fontSize: 14, marginBottom: 16 }}>{userUsername}</div>
+                <button onClick={() => setActiveTab('home')} style={{ padding: '8px 16px', background: '#f4f3ff', color: '#6c63ff', border: '1px solid #e0dff8', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                  ← Asosiy sahifaga qaytish
+                </button>
+              </div>
+
+              <div style={{ width: '100%' }}>
+                <h3 style={{ fontSize: 15, color: '#1a1a2e', fontWeight: 600, margin: '0 0 12px' }}>Mening taqdimotlarim</h3>
+                {history.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {history.map((h, i) => (
+                      <div key={i} style={{ background: '#fff', padding: '14px 16px', borderRadius: 12, border: '1px solid #e0dff8', display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: '#f4f3ff', color: '#6c63ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>📊</div>
+                        <div style={{ flex: 1, overflow: 'hidden' }}>
+                          <div style={{ fontWeight: 600, fontSize: 14, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{h.topic}</div>
+                          <div style={{ fontSize: 12, color: '#9a9db8', marginTop: 4 }}>Yaratilgan sana: {h.date}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ background: '#fff', padding: '24px', borderRadius: 12, border: '1px dashed #c4c7dc', textAlign: 'center', color: '#9a9db8', fontSize: 13 }}>
+                    Hali hech qanday taqdimot yaratmadingiz.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── INPUT ── */}
@@ -369,7 +409,7 @@ export default function App() {
       )}
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{margin:0;padding:0;overflow:hidden;}
         @keyframes spin{to{transform:rotate(360deg)}}
