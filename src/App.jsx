@@ -341,24 +341,29 @@ export default function App() {
 
       {/* AI Support Chat Modal (Navbar tagida chiqadi) */}
       {chatOpen && (
-          <div style={{ position: 'fixed', top: 65, right: 15, width: 'calc(100% - 30px)', maxWidth: 320, height: 400, background: '#fff', borderRadius: 16, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
-              {/* Header */}
-              <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 20 }}>🤖</span> Support Bot
-              </div>
-              {/* Messages */}
-              <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: 10, background: '#f7f8fc' }}>
-                  {chatMessages.map((m, i) => (
-                      <div key={i} style={{ alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start', background: m.role === 'user' ? 'linear-gradient(135deg,#6c63ff,#4f46e5)' : '#fff', color: m.role === 'user' ? '#fff' : '#1a1a2e', padding: '10px 14px', borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px', fontSize: 13, maxWidth: '85%', boxShadow: '0 2px 5px rgba(0,0,0,.05)', border: m.role === 'ai' ? '1px solid #e0dff8' : 'none', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
-                          {m.text}
+          <div onClick={() => setChatOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div onClick={e => e.stopPropagation()} style={{ width: 'calc(100% - 30px)', maxWidth: 360, height: 450, background: '#fff', borderRadius: 16, boxShadow: '0 8px 40px rgba(0,0,0,.2)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8', animation: 'scaleUp 0.2s ease-out' }}>
+                  {/* Header */}
+                  <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontSize: 20 }}>🤖</span> Support Bot
                       </div>
-                  ))}
-                  {chatLoading && <div style={{ alignSelf: 'flex-start', background: '#fff', padding: '10px 14px', borderRadius: '18px 18px 18px 4px', fontSize: 13, border: '1px solid #e0dff8', color: '#9a9db8' }}>Yozmoqda...</div>}
-              </div>
-              {/* Input */}
-              <div style={{ padding: '10px', background: '#fff', borderTop: '1px solid #f0f0f8', display: 'flex', gap: 8 }}>
-                  <input type="text" placeholder="Savol yozing..." value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => { if(e.key === 'Enter') handleSendChat(); }} style={{ flex: 1, background: '#f4f3ff', border: 'none', borderRadius: 12, padding: '10px 14px', fontSize: 13, outline: 'none' }} disabled={chatLoading} />
-                  <button onClick={handleSendChat} disabled={!chatInput.trim() || chatLoading} style={{ background: chatInput.trim() ? '#6c63ff' : '#ddd6fe', color: '#fff', border: 'none', borderRadius: 12, width: 40, cursor: chatInput.trim() ? 'pointer' : 'default', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>↑</button>
+                      <button onClick={() => setChatOpen(false)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 'bold' }}>✕</button>
+                  </div>
+                  {/* Messages */}
+                  <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: 10, background: '#f7f8fc' }}>
+                      {chatMessages.map((m, i) => (
+                          <div key={i} style={{ alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start', background: m.role === 'user' ? 'linear-gradient(135deg,#6c63ff,#4f46e5)' : '#fff', color: m.role === 'user' ? '#fff' : '#1a1a2e', padding: '10px 14px', borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px', fontSize: 13, maxWidth: '85%', boxShadow: '0 2px 5px rgba(0,0,0,.05)', border: m.role === 'ai' ? '1px solid #e0dff8' : 'none', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                              {m.text}
+                          </div>
+                      ))}
+                      {chatLoading && <div style={{ alignSelf: 'flex-start', background: '#fff', padding: '10px 14px', borderRadius: '18px 18px 18px 4px', fontSize: 13, border: '1px solid #e0dff8', color: '#9a9db8' }}>Yozmoqda...</div>}
+                  </div>
+                  {/* Input */}
+                  <div style={{ padding: '10px', background: '#fff', borderTop: '1px solid #f0f0f8', display: 'flex', gap: 8 }}>
+                      <input type="text" placeholder="Savol yozing..." value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => { if(e.key === 'Enter') handleSendChat(); }} style={{ flex: 1, background: '#f4f3ff', border: 'none', borderRadius: 12, padding: '10px 14px', fontSize: 13, outline: 'none' }} disabled={chatLoading} />
+                      <button onClick={handleSendChat} disabled={!chatInput.trim() || chatLoading} style={{ background: chatInput.trim() ? '#6c63ff' : '#ddd6fe', color: '#fff', border: 'none', borderRadius: 12, width: 40, cursor: chatInput.trim() ? 'pointer' : 'default', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>↑</button>
+                  </div>
               </div>
           </div>
       )}
@@ -368,6 +373,7 @@ export default function App() {
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{margin:0;padding:0;overflow:hidden;}
         @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes scaleUp{from{transform:scale(0.95);opacity:0}to{transform:scale(1);opacity:1}}
         ::-webkit-scrollbar{width:4px;}
         ::-webkit-scrollbar-thumb{background:#d1d5ee;border-radius:2px;}
       `}</style>
