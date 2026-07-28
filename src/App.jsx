@@ -145,7 +145,7 @@ export default function App() {
         {/* Logo */}
         <div style={{ padding: '18px 18px 14px', borderBottom: '1px solid #f0f0f8', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 38, height: 38, borderRadius: 11, background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
-            <img src={image} alt="logo" />
+            <img style={{ width: '100%', height: '100%' }} src={image} alt="logo" />
           </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: 15, color: '#1a1a2e' }}>Presentation AI</div>
@@ -209,7 +209,7 @@ export default function App() {
           {screen === 'home' && (
             <div style={{ textAlign: 'center', width: '100%', maxWidth: 340 }}>
               <div style={{ width: 76, height: 76, borderRadius: 22, background: 'linear-gradient(135deg,#ede9fe,#ddd6fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px', fontSize: 36 }}>
-                <img src={image} alt="logo" />
+                <img style={{ width: '100%', height: '100%' }} src={image} alt="logo" />
               </div>
               <h2 style={{ fontWeight: 800, fontSize: 22, color: '#1a1a2e', margin: '0 0 10px' }}>Qanday dars o'tmoqchisiz?</h2>
               <p style={{ color: '#7b7fa8', fontSize: 14, margin: '0 0 24px', lineHeight: 1.65 }}>Mavzuni erkin tilda yozing. AI o'zi mos fan, sinf va slaydlarni tuzib beradi.</p>
