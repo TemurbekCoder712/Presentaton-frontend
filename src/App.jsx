@@ -339,8 +339,6 @@ export default function App() {
         )}
       </div>
 
-      </div>
-
       {/* AI Support Chat Modal (Navbar tagida chiqadi) */}
       {chatOpen && (
           <div style={{ position: 'fixed', top: 65, right: 15, width: 'calc(100% - 30px)', maxWidth: 320, height: 400, background: '#fff', borderRadius: 16, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
