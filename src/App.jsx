@@ -31,8 +31,15 @@ export default function App() {
   const [error, setError] = useState('');
   const [slides, setSlides] = useState(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
   const inputRef = useRef(null);
   const progressRef = useRef(null);
+
+  // Chatbot State
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([{ role: 'ai', text: "Salom! Men Presentation AI yordamchisiman. Sizga qanday yordam bera olaman?" }]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
 
   useEffect(() => { if (tg) { tg.ready(); tg.expand(); } }, []);
 
@@ -88,6 +95,33 @@ export default function App() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendChat = async () => {
+    if (!chatInput.trim() || chatLoading) return;
+    const msg = chatInput.trim();
+    setChatMessages(p => [...p, { role: 'user', text: msg }]);
+    setChatInput('');
+    setChatLoading(true);
+    
+    try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+        const res = await fetch(`${backendUrl}/api/support-chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        if (data.success) {
+            setChatMessages(p => [...p, { role: 'ai', text: data.reply }]);
+        } else {
+            setChatMessages(p => [...p, { role: 'ai', text: "Uzur, xatolik yuz berdi." }]);
+        }
+    } catch (e) {
+        setChatMessages(p => [...p, { role: 'ai', text: "Uzur, tarmoqda xatolik yuz berdi." }]);
+    } finally {
+        setChatLoading(false);
     }
   };
 
@@ -299,6 +333,37 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {/* AI Support Chat Button */}
+      <button 
+          onClick={() => setChatOpen(p => !p)}
+          style={{ position: 'fixed', bottom: 20, right: 20, width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontSize: 24, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(108,99,255,.4)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}>
+          {chatOpen ? '✕' : '💬'}
+      </button>
+
+      {/* AI Support Chat Modal */}
+      {chatOpen && (
+          <div style={{ position: 'fixed', bottom: 85, right: 20, width: 'calc(100% - 40px)', maxWidth: 320, height: 420, background: '#fff', borderRadius: 20, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
+              {/* Header */}
+              <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 20 }}>🤖</span> Support Bot
+              </div>
+              {/* Messages */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: 10, background: '#f7f8fc' }}>
+                  {chatMessages.map((m, i) => (
+                      <div key={i} style={{ alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start', background: m.role === 'user' ? 'linear-gradient(135deg,#6c63ff,#4f46e5)' : '#fff', color: m.role === 'user' ? '#fff' : '#1a1a2e', padding: '10px 14px', borderRadius: m.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px', fontSize: 13, maxWidth: '85%', boxShadow: '0 2px 5px rgba(0,0,0,.05)', border: m.role === 'ai' ? '1px solid #e0dff8' : 'none', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                          {m.text}
+                      </div>
+                  ))}
+                  {chatLoading && <div style={{ alignSelf: 'flex-start', background: '#fff', padding: '10px 14px', borderRadius: '18px 18px 18px 4px', fontSize: 13, border: '1px solid #e0dff8', color: '#9a9db8' }}>Yozmoqda...</div>}
+              </div>
+              {/* Input */}
+              <div style={{ padding: '10px', background: '#fff', borderTop: '1px solid #f0f0f8', display: 'flex', gap: 8 }}>
+                  <input type="text" placeholder="Savol yozing..." value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => { if(e.key === 'Enter') handleSendChat(); }} style={{ flex: 1, background: '#f4f3ff', border: 'none', borderRadius: 12, padding: '10px 14px', fontSize: 13, outline: 'none' }} disabled={chatLoading} />
+                  <button onClick={handleSendChat} disabled={!chatInput.trim() || chatLoading} style={{ background: chatInput.trim() ? '#6c63ff' : '#ddd6fe', color: '#fff', border: 'none', borderRadius: 12, width: 40, cursor: chatInput.trim() ? 'pointer' : 'default', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>↑</button>
+              </div>
+          </div>
+      )}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
