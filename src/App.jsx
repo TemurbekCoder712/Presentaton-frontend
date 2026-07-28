@@ -183,11 +183,17 @@ export default function App() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
 
         {/* Header */}
-        <div style={{ padding: '13px 18px', display: 'flex', alignItems: 'center', gap: 12, background: '#fff', borderBottom: '1px solid #f0f0f8', boxShadow: '0 1px 4px rgba(0,0,0,.05)' }}>
+        <div style={{ padding: '13px 18px', display: 'flex', alignItems: 'center', gap: 12, background: '#fff', borderBottom: '1px solid #f0f0f8', boxShadow: '0 1px 4px rgba(0,0,0,.05)', zIndex: 10 }}>
           <button onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4b4b70', fontSize: 20, display: 'flex', alignItems: 'center', padding: '3px 6px', borderRadius: 8 }}>☰</button>
-          <span style={{ fontWeight: 600, fontSize: 15, color: '#1a1a2e' }}>
+          <span style={{ fontWeight: 600, fontSize: 15, color: '#1a1a2e', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {screen === 'slides' ? sentTopic : 'Yangi taqdimot'}
           </span>
+          {/* AI Support Chat Button in Navbar */}
+          <button 
+              onClick={() => setChatOpen(p => !p)}
+              style={{ background: chatOpen ? '#f4f3ff' : '#fcfcfd', color: '#6c63ff', border: '1px solid #e0dff8', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s', whiteSpace: 'nowrap' }}>
+              <span>💬</span> Yordam
+          </button>
         </div>
 
         {/* Content */}
@@ -333,17 +339,11 @@ export default function App() {
         )}
       </div>
 
-      {/* AI Support Chat Button */}
-      <button 
-          onClick={() => setChatOpen(p => !p)}
-          className="chat-pulse"
-          style={{ position: 'fixed', bottom: 80, right: 20, width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontSize: 24, border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(108,99,255,.4)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}>
-          {chatOpen ? '✕' : '💬'}
-      </button>
+      </div>
 
-      {/* AI Support Chat Modal */}
+      {/* AI Support Chat Modal (Navbar tagida chiqadi) */}
       {chatOpen && (
-          <div style={{ position: 'fixed', bottom: 145, right: 20, width: 'calc(100% - 40px)', maxWidth: 320, height: 420, background: '#fff', borderRadius: 20, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
+          <div style={{ position: 'fixed', top: 65, right: 15, width: 'calc(100% - 30px)', maxWidth: 320, height: 400, background: '#fff', borderRadius: 16, boxShadow: '0 8px 30px rgba(0,0,0,.15)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8' }}>
               {/* Header */}
               <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 20 }}>🤖</span> Support Bot
@@ -370,14 +370,6 @@ export default function App() {
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
         body{margin:0;padding:0;overflow:hidden;}
         @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes pulse-anim {
-          0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.5); }
-          70% { box-shadow: 0 0 0 15px rgba(108, 99, 255, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
-        }
-        .chat-pulse {
-          animation: pulse-anim 2s infinite;
-        }
         ::-webkit-scrollbar{width:4px;}
         ::-webkit-scrollbar-thumb{background:#d1d5ee;border-radius:2px;}
       `}</style>
