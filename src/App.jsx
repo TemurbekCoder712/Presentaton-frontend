@@ -129,7 +129,7 @@ export default function App() {
         const res = await fetch(`${backendUrl}/api/support-chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg })
+            body: JSON.stringify({ message: msg, history: chatMessages })
         });
         const data = await res.json();
         if (data.success) {
@@ -427,10 +427,9 @@ export default function App() {
         )}
       </div>
 
-      {/* AI Support Chat Modal (Navbar tagida chiqadi) */}
-      {chatOpen && (
-          <div onClick={() => setChatOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div onClick={e => e.stopPropagation()} style={{ width: 'calc(100% - 30px)', maxWidth: 360, height: 450, background: '#fff', borderRadius: 16, boxShadow: '0 8px 40px rgba(0,0,0,.2)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8', animation: 'scaleUp 0.2s ease-out' }}>
+      {/* AI Support Chat Modal (Navbar tagida chiqadi, doimiy render bo'ladi faqat display o'zgaradi) */}
+      <div onClick={() => setChatOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 50, display: chatOpen ? 'flex' : 'none', alignItems: 'center', justifyContent: 'center' }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 'calc(100% - 30px)', maxWidth: 360, height: 450, background: '#fff', borderRadius: 16, boxShadow: '0 8px 40px rgba(0,0,0,.2)', zIndex: 60, display: 'flex', flexDirection: 'column', overflow: 'hidden', border: '1px solid #e0dff8', animation: chatOpen ? 'scaleUp 0.2s ease-out' : 'none' }}>
                   {/* Header */}
                   <div style={{ padding: '14px 18px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -454,7 +453,6 @@ export default function App() {
                   </div>
               </div>
           </div>
-      )}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
