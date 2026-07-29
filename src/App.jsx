@@ -39,6 +39,7 @@ const TypingMessage = ({ text, animate }) => {
 };
 
 export default function App() {
+  const [userData, setUserData] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [topic, setTopic] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,6 +61,34 @@ export default function App() {
   const [chatLoading, setChatLoading] = useState(false);
 
   useEffect(() => { if (tg) { tg.ready(); tg.expand(); } }, []);
+
+  useEffect(() => {
+      // Telegram user ma'lumotlarini backendga yuborish
+      if (user && user.id) {
+          const authUser = async () => {
+              try {
+                  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+                  const res = await fetch(`${backendUrl}/api/auth`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                          id: user.id,
+                          first_name: user.first_name,
+                          last_name: user.last_name,
+                          username: user.username
+                      })
+                  });
+                  const data = await res.json();
+                  if(data.success) {
+                      setUserData(data.user);
+                  }
+              } catch (e) {
+                  console.error("Auth xatosi:", e);
+              }
+          };
+          authUser();
+      }
+  }, []);
 
   const runProgress = () => {
     let p = 0;
@@ -148,7 +177,9 @@ export default function App() {
   const userUsername = user?.username ? `@${user.username}` : 'No username';
   const userInitial = userName.charAt(0).toUpperCase();
   const userEmail = user ? `tg_${user.id}@telegram.local` : 'No email';
-  const userRegDate = 'XX.XX.XXXX';
+  const userRegDate = userData?.createdAt 
+        ? new Date(userData.createdAt).toLocaleDateString('ru-RU') 
+        : 'Yuklanmoqda...';
 
   const screen = activeTab === 'profile' ? 'profile' : loading ? 'loading' : slides ? 'slides' : error ? 'error' : 'home';
 
