@@ -60,6 +60,10 @@ export default function App() {
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
 
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackInput, setFeedbackInput] = useState('');
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+
   useEffect(() => { if (tg) { tg.ready(); tg.expand(); } }, []);
 
   useEffect(() => {
@@ -173,6 +177,35 @@ export default function App() {
     }
   };
 
+  const handleSendFeedback = async () => {
+    if (!feedbackInput.trim() || feedbackLoading) return;
+    setFeedbackLoading(true);
+    try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+        const res = await fetch(`${backendUrl}/api/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                name: userName, 
+                username: userUsername, 
+                feedback: feedbackInput.trim() 
+            })
+        });
+        const data = await res.json();
+        if (data.success) {
+            setFeedbackInput('');
+            setFeedbackOpen(false);
+            tg?.showAlert?.("Fikringiz uchun rahmat!");
+        } else {
+            tg?.showAlert?.("Xatolik yuz berdi.");
+        }
+    } catch (e) {
+        tg?.showAlert?.("Tarmoq xatosi.");
+    } finally {
+        setFeedbackLoading(false);
+    }
+  };
+
   const userName = user ? `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() : 'No name';
   const userUsername = user?.username ? `@${user.username}` : 'No username';
   const userInitial = userName.charAt(0).toUpperCase();
@@ -208,6 +241,11 @@ export default function App() {
           <button onClick={() => { setActiveTab('home'); setSidebarOpen(false); setSlides(null); setError(''); setTimeout(() => inputRef.current?.focus(), 300); }}
             style={{ padding: '11px 14px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 14px rgba(108,99,255,.3)' }}>
             <span style={{ fontSize: 18 }}>＋</span> Yangi taqdimot
+          </button>
+          
+          <button onClick={() => { setFeedbackOpen(true); setSidebarOpen(false); }}
+            style={{ padding: '11px 14px', background: '#f4f3ff', color: '#6c63ff', border: '1px solid #e0dff8', borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 16 }}>💡</span> Fikr bildirish
           </button>
         </div>
 
@@ -484,6 +522,32 @@ export default function App() {
                   </div>
               </div>
           </div>
+
+      {/* Feedback Modal */}
+      <div onClick={() => setFeedbackOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', zIndex: 60, display: feedbackOpen ? 'flex' : 'none', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(3px)' }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: 'calc(100% - 40px)', maxWidth: 360, background: '#fff', borderRadius: 16, padding: '20px', display: 'flex', flexDirection: 'column', gap: 12, animation: feedbackOpen ? 'scaleUp 0.2s ease-out' : 'none', boxShadow: '0 8px 40px rgba(0,0,0,.2)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontWeight: 600, fontSize: 16, color: '#1a1a2e' }}>💡 Fikr va takliflar</div>
+                  <button onClick={() => setFeedbackOpen(false)} style={{ background: '#f4f3ff', border: 'none', color: '#6c63ff', width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>✕</button>
+              </div>
+              <div style={{ fontSize: 13, color: '#4b4b70', lineHeight: 1.4 }}>
+                  Taqdimot AI qanday ishlayapti? Nimalarni qo'shish kerakligini yoki takliflaringizni yozib qoldiring. 
+              </div>
+              <textarea 
+                  value={feedbackInput}
+                  onChange={e => setFeedbackInput(e.target.value)}
+                  placeholder="Xabaringizni yozing..."
+                  style={{ width: '100%', height: 100, padding: '12px', borderRadius: 10, border: '1px solid #e0dff8', background: '#fcfcfd', fontSize: 14, outline: 'none', resize: 'none', fontFamily: 'inherit' }}
+                  disabled={feedbackLoading}
+              />
+              <button 
+                  onClick={handleSendFeedback} 
+                  disabled={!feedbackInput.trim() || feedbackLoading}
+                  style={{ background: feedbackInput.trim() ? 'linear-gradient(135deg,#6c63ff,#4f46e5)' : '#ddd6fe', color: '#fff', padding: '12px', borderRadius: 10, border: 'none', fontWeight: 600, fontSize: 14, cursor: feedbackInput.trim() ? 'pointer' : 'default', transition: 'all 0.2s' }}>
+                  {feedbackLoading ? "Yuborilmoqda..." : "Xabarni jo'natish"}
+              </button>
+          </div>
+      </div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
