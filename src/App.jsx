@@ -399,7 +399,7 @@ export default function App() {
                   style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', borderRadius: 12, fontWeight: 600, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, boxShadow: '0 4px 14px rgba(108,99,255,.3)' }}>
                   🔄 Yangi dars
                 </button>
-                <button style={{ flex: 1, padding: '12px', background: '#fff', color: '#6c63ff', border: '1.5px solid #e0dff8', borderRadius: 12, fontWeight: 600, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <button onClick={() => setFeedbackOpen(true)} style={{ flex: 1, padding: '12px', background: '#fff', color: '#6c63ff', border: '1.5px solid #e0dff8', borderRadius: 12, fontWeight: 600, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                   💬 Fikr bildirish
                 </button>
               </div>
