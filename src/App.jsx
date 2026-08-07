@@ -48,7 +48,12 @@ export default function App() {
   const [sentTopic, setSentTopic] = useState('');
   const [error, setError] = useState('');
   const [slides, setSlides] = useState(null);
+  const [themeColor, setThemeColor] = useState('6c63ff');
   const [activeSlide, setActiveSlide] = useState(0);
+  const [pptxSent, setPptxSent] = useState(false);
+  const [pdfSent, setPdfSent] = useState(false);
+  const [sendingPptx, setSendingPptx] = useState(false);
+  const [sendingPdf, setSendingPdf] = useState(false);
   const [history, setHistory] = useState([]); // History state for tracking presentations
   const [activeTab, setActiveTab] = useState('home'); // Tabs: home, profile
   const inputRef = useRef(null);
@@ -118,6 +123,8 @@ export default function App() {
     setError('');
     setSlides(null);
     setActiveSlide(0);
+    setPptxSent(false);
+    setPdfSent(false);
     setSentTopic(finalTopic);
     setProgress(0);
     setStepIdx(0);
@@ -140,6 +147,7 @@ export default function App() {
 
       stopProgress(true);
       setSlides(result.slides || []);
+      setThemeColor(result.themeColor || '6c63ff');
       setHistory(prev => [{ topic: finalTopic, date: new Date().toLocaleDateString() }, ...prev]);
       setTopic('');
     } catch (err) {
@@ -162,7 +170,7 @@ export default function App() {
         const res = await fetch(`${backendUrl}/api/support-chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: msg, history: chatMessages })
+            body: JSON.stringify({ message: msg, history: chatMessages, user: user })
         });
         const data = await res.json();
         if (data.success) {
@@ -174,6 +182,42 @@ export default function App() {
         setChatMessages(p => [...p, { role: 'ai', text: "Uzur, tarmoqda xatolik yuz berdi.", animate: true }]);
     } finally {
         setChatLoading(false);
+    }
+  };
+
+  const handleSendFile = async (type) => {
+    if (type === 'pptx' && (pptxSent || sendingPptx)) return;
+    if (type === 'pdf' && (pdfSent || sendingPdf)) return;
+
+    if (type === 'pptx') setSendingPptx(true);
+    else setSendingPdf(true);
+
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+      const res = await fetch(`${backendUrl}/api/send-file`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: sentTopic,
+          chatId: CHAT_ID,
+          type: type,
+          slides: slides,
+          themeColor: themeColor
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (type === 'pptx') setPptxSent(true);
+        else setPdfSent(true);
+        tg?.showAlert?.(`${type.toUpperCase()} telegramga yuborildi!`);
+      } else {
+        tg?.showAlert?.("Xatolik yuz berdi.");
+      }
+    } catch (e) {
+      tg?.showAlert?.("Tarmoq xatosi yuz berdi.");
+    } finally {
+      if (type === 'pptx') setSendingPptx(false);
+      else setSendingPdf(false);
     }
   };
 
@@ -347,8 +391,15 @@ export default function App() {
               {/* Header row */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <div style={{ fontWeight: 700, fontSize: 18, color: '#1a1a2e' }}>Slaydlar</div>
-                <div style={{ background: 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 3px 10px rgba(108,99,255,.35)' }}>
-                  📎 PPTX yuborildi ✓
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button onClick={() => handleSendFile('pdf')} disabled={pdfSent || sendingPdf}
+                    style={{ background: pdfSent ? '#4caf50' : '#e53935', color: '#fff', border: 'none', padding: '8px 10px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: pdfSent || sendingPdf ? 'default' : 'pointer', boxShadow: '0 3px 10px rgba(229,57,53,.3)' }}>
+                    {pdfSent ? '✓ PDF yuborildi' : sendingPdf ? 'Kuting...' : '📄 PDF tashlash'}
+                  </button>
+                  <button onClick={() => handleSendFile('pptx')} disabled={pptxSent || sendingPptx}
+                    style={{ background: pptxSent ? '#4caf50' : 'linear-gradient(135deg,#6c63ff,#4f46e5)', color: '#fff', border: 'none', padding: '8px 10px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: pptxSent || sendingPptx ? 'default' : 'pointer', boxShadow: '0 3px 10px rgba(108,99,255,.35)' }}>
+                    {pptxSent ? '✓ PPTX yuborildi' : sendingPptx ? 'Kuting...' : '📎 PPTX tashlash'}
+                  </button>
                 </div>
               </div>
 
